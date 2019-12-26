@@ -3,7 +3,15 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ";"
+      },
+      dist: {
+        src: ['app/*.js', 'app/**/*.js', 'lib/*.js', 'public/client/*.js'],
+        dest: 'main.min.js'
+      }
     },
+
 
     mochaTest: {
       test: {
@@ -21,6 +29,10 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      dist: {
+        src: 'main.min.js',
+        dest: 'ugly.js'
+      }
     },
 
     eslint: {
@@ -65,7 +77,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-nodemon');
 
   grunt.registerTask('server-dev', function (target) {
-    grunt.task.run([ 'nodemon', 'watch' ]);
+    grunt.task.run([ 'nodemon', 'watch', 'build' ]);
   });
 
   ////////////////////////////////////////////////////
@@ -76,8 +88,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
-  ]);
+  grunt.registerTask('build', ['concat','uglify']);
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
